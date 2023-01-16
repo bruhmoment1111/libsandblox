@@ -6,3 +6,6 @@ You may not use this software if your company makes a revenue more than $10000 i
 If you are using a licensed copy you may not open source your forks, you are required to keep any modifications closed sourced that means you are free to distribute them in binary form but not as a source this condition does not apply for open source version distributed through github.
 
 This license may change in future to a more restrictive or a less restrictive license but changes to the License will not affect older iterations of software and will only apply to new versions.
+
+Exceptions
+These conditions will not apply if this software is bundled together with AGPL licensed software by bundling that means sharing the source, in case this software is bundled together with agpl licensed software no restrictions will be applied and this software will be considered as free software.

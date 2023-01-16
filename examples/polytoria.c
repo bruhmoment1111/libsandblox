@@ -16,6 +16,10 @@ int main(void) {
 
     FILE* f;
     f = fopen("example.poly", "r");
+    if(f == NULL) {
+        fputs("File not found", stderr);
+        return 1;
+    }
     fseek(f, 0, SEEK_END);
     size_t s = ftell(f);
     fseek(f, 0, SEEK_SET);
@@ -24,8 +28,7 @@ int main(void) {
 
     char* buf = malloc(s);
     for(unsigned i = 0; i < s; i++) buf[i] = fgetc(f);
-    struct Game game = parseBrk(buf, s);
-    printf("Version: %s\n", game.vstr);
+    struct Game game = parsePoly(buf, s);
     for(unsigned i = 0; i < game.pc; i++) {
         /* test flags for features before actions
             otherwise you will get a nasty segmentation fault
@@ -36,5 +39,6 @@ int main(void) {
             printf("x: %.2f y: %.2f z: %.2f\n", game.bricks[i]->x, game.bricks[i]->y, game.bricks[i]->z);
         
     }
+    free(buf);
     return 0;   
 }

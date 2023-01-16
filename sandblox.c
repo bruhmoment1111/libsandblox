@@ -155,7 +155,22 @@ struct Game parseBrk(const char* in, size_t len) {
 */
 struct Game parsePoly(const char* in, size_t len) {
     struct Game game;
+    game.pc = 0;
     unsigned lines = 0;
+
+    /* bit arrays are more efficient but lazy */
+    unsigned char startedTag = 0;
+    unsigned char readProperty = 0;
+    char* currentTag = calloc(2, 1);
+    char* property = calloc(2, 1);
+    char* propertyVal = calloc(2, 1);
+
+    /* iterator of current tag */
+    unsigned cti = 0;
+    /* property iterator */
+    unsigned pti = 0;
+    
+    unsigned pvti = 0;
 
 
 
@@ -167,21 +182,51 @@ struct Game parsePoly(const char* in, size_t len) {
         if(in[i] == '\n') lines++;
         /* we do not want metadata about the xml file itself */
         if(lines > 0) {
-            if(in[i] == '<') {
-                /* start reading the tag 
-                    if in step 2
-                    also make this sub part of tag we are begin
-                    */
+            if(readProperty) {
+                property[pti] = in[i];
+                pti++;
+                char* ec = realloc(property, 2 + pti);
+                property = ec;
             }
             if(in[i] == '>') {
                 /* stop reading the tag but that's still not the end
                 get to step 2*/
-            }            
+                startedTag = 0;
+                puts(currentTag);
+                free(currentTag);
+                cti = 0;
+                currentTag = calloc(2, 1);
+            }  
+            if(startedTag && !readProperty) {
+                if(in[i] == ' ') {
+                    readProperty = 1;
+                }
+                currentTag[cti] = in[i];
+                cti++;
+                char* ec = realloc(currentTag, 2 + cti);
+                if(ec != NULL) currentTag = ec;
+                else {
+                    fputs("Cannot realloc\n", stderr);
+                    return game;
+                }
+                currentTag[1 + cti] = 0;
+            }
+            if(in[i] == '<' && in[i + ((i + 1) < len)] != '/') {
+                /* start reading the tag 
+                    if in step 2
+                    also make this sub part of tag we are begin
+                    */
+                   startedTag = 1;
+            }
+          
             if(in[i] == '/') {
                 /*portion ends completely*/
             }
         }
     }
+    free(property);
+    free(propertyVal);
+    free(currentTag);
     return game;
 }
 

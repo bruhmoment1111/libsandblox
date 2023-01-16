@@ -13,14 +13,21 @@ struct Brick{
     /* Extra */
     char*n;  float reflect; unsigned char flags; unsigned char shape;
 };
+struct Environment{
+    float gravityX;
+    float gravityY;
+    float gravityZ;
 
+};
 struct Game{
     /* version string */
     char* vstr;
     /* brick count */
     uint64_t pc;
     struct Brick** bricks;
+    struct Environment env;
 };
 
 struct Game parseBrk(const char* in, size_t len);
+struct Game parsePoly(const char* in, size_t len);
 char* exportbrk(struct Game game);
